@@ -1,71 +1,89 @@
-//importation des modules
-
-
+//impoetation des modules
 const express = require("express");
-const buisness = require("../business/business.js")
-const RESQUEST_URL = "/users";
+const  cors =require("cors");
+const business = require("../business/business");
 
-// Initisation de l'application 
-
+//Init
 let app = express();
+const REQUESTS_URL="/users";
 
-// API backend 
+//api
 const api = {
-    
-    //start l'API sur le port 
-    start : port => { app.listen(port, () => {
-        // autorise l'utilisation des Json
+    /**
+     * lance l'api sur un port donnee
+     * @param {number} port le port
+     */
+    start: port=>{
+        
         app.use(express.json());
 
-        //Toutes les requetes
+        app.use(cors({
+            origin: "*"
+        }))
 
-        //requete de GET qui renvoie un json qui contient tous les utilisateurs
-        app.get(RESQUEST_URL, (req , res ,next) => {
-            res.json(buisness.get_all_users());
+        
+        /**
+         * appel de la database
+         * @param {number} REQUESTS_URL l'url d'appel
+         */
+        app.get(REQUESTS_URL, (req, res)=>{
+            res.json(business.get_all_users());
         });
 
-        //requete de post ajoute un utilisateur dans la BDD
-        app.post(RESQUEST_URL, (req , res ,next) => {
-            let is_added= buisness.add_user(req.body);
+        
+        /**
+         * ajout dans la database
+         * @param {number} REQUESTS_URL l'url d'appel
+         */
+        app.post(REQUESTS_URL, (req, res)=>{
+            let is_added = business.add_user(req.body);
 
-            //renvoie les codes de réussite ou echec
             if(is_added){
                 res.sendStatus(200);
-            } else {
+            } else{
                 res.sendStatus(400);
             }
         });
-        
-        //requete de Edit user qui modifie l'utilisateur dans la BDD
-        app.put(RESQUEST_URL, (req , res ,next) => {
-            let is_edit= buisness.edit_user(req.body);
 
-            //renvoie les codes de réussite ou echec
-            if(is_edit){
+        
+        /**
+         * 
+         * edit dans la database
+         * @param {number} REQUESTS_URL l'url d'appel
+         */
+        app.put(REQUESTS_URL, (req, res)=>{
+            let is_edited = business.edit_user(req.body);
+
+            if(is_edited){
                 res.sendStatus(200);
-            } else {
+            } else{
                 res.sendStatus(400);
             }
         });
-        
-        //
-        app.delete(RESQUEST_URL, (req , res ,next) => {
-            let is_delete= buisness.delete_user(req.body);
 
-            //renvoie les codes de réussite ou echec
-            if(is_delete){
+        /**
+        * suprime de la database
+        * @param {number} REQUESTS_URL l'url d'appel
+        */
+        app.delete(REQUESTS_URL, (req, res)=>{
+            let is_deleted = business.delete_user(req.body);
+
+            if(is_deleted){
                 res.sendStatus(200);
-            } else {
+            } else{
                 res.sendStatus(400);
             }
         });
-        
 
-        //starts listening the port 
-        console.log(`App listening to port ${port} `)
-    })}
+        app.listen(port, ()=>{
+            console.log(`App listening to port ${port}`);
+        });
+
+        //debug
+        app.use(express.static("public"));
+    }
 };
 
-// Exportation des module
 
-module.exports = api; 
+//Exportation de l'api
+module.exports=api;
