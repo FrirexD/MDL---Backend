@@ -3,7 +3,7 @@
 Pour le projet de MDL il y a deux github a récuperer : 
 
 - le Backend  (ce github)
-- le Frontend (l'autre)  https://github.com/FrirexD/MDL---FRONTEND
+- le Frontend (l'autre)  https://github.com/FrirexD/MD---FRONTEND
 
 ## Modules et instructions 
 Avant toute chose il faudra les modules suivant avec NPM : 
